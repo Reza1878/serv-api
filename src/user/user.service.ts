@@ -8,7 +8,6 @@ export class UserService {
 
   async update(id: number, dto: UpdateUserDto) {
     const { experiences, ...restData } = dto;
-    console.log({ dto });
     await this.prisma.$transaction([
       this.prisma.user.update({
         where: {

@@ -22,7 +22,8 @@ model User {
   sellerBalance BigInt           @default(0) @map("seller_balance")
   createdAt     DateTime         @default(now()) @map("created_at")
   experiences   UserExperience[]
-  services      Service[]
+  gigs          Gig[]
+  reviews       GigReview[]
 
   @@map("users")
 }
@@ -36,58 +37,72 @@ model UserExperience {
   @@map("user_experiences")
 }
 
-model Service {
-  id            Int                 @id @default(autoincrement())
+model Gig {
+  id            Int             @id @default(autoincrement())
   title         String
   description   String
   duration      Int
-  revisionLimit Int                 @map("revision_limit")
-  price         BigInt
+  revisionLimit Int             @map("revision_limit")
+  price         Int
   note          String?
-  User          User                @relation(fields: [sellerId], references: [id])
-  sellerId      Int                 @map("seller_id")
-  isActive      Int                 @default(1) @map("is_active")
-  createdAt     DateTime            @default(now()) @map("created_at")
-  perks         ServicePerk[]
-  sellerPerks   ServiceSellerPerk[]
-  taglines      ServiceTagline[]
-  images        ServiceImage[]
+  Seller        User            @relation(fields: [sellerId], references: [id])
+  sellerId      Int             @map("seller_id")
+  isActive      Int             @default(1) @map("is_active")
+  slug          String
+  createdAt     DateTime        @default(now()) @map("created_at")
+  perks         GigPerk[]
+  sellerPerks   GigSellerPerk[]
+  taglines      GigTagline[]
+  images        GigImage[]
+  reviews       GigReview[]
 
-  @@map("services")
+  @@map("gigs")
 }
 
-model ServicePerk {
-  id        Int     @id @default(autoincrement())
-  perk      String
-  Service   Service @relation(fields: [serviceId], references: [id])
-  serviceId Int     @map("service_id")
+model GigPerk {
+  id    Int    @id @default(autoincrement())
+  perk  String
+  Gig   Gig    @relation(fields: [gigId], references: [id])
+  gigId Int    @map("gig_id")
 
-  @@map("service_perks")
+  @@map("gig_perks")
 }
 
-model ServiceSellerPerk {
-  id        Int     @id @default(autoincrement())
-  perk      String
-  Service   Service @relation(fields: [serviceId], references: [id])
-  serviceId Int     @map("service_id")
+model GigSellerPerk {
+  id    Int    @id @default(autoincrement())
+  perk  String
+  Gig   Gig    @relation(fields: [gigId], references: [id])
+  gigId Int    @map("gig_id")
 
-  @@map("service_seller_perks")
+  @@map("gig_seller_perks")
 }
 
-model ServiceTagline {
-  id        Int     @id @default(autoincrement())
-  tagline   String
-  Service   Service @relation(fields: [serviceId], references: [id])
-  serviceId Int     @map("service_id")
+model GigTagline {
+  id      Int    @id @default(autoincrement())
+  tagline String
+  Gig     Gig    @relation(fields: [gigId], references: [id])
+  gigId   Int    @map("gig_id")
 
-  @@map("service_taglines")
+  @@map("gig_taglines")
 }
 
-model ServiceImage {
-  id        Int     @id @default(autoincrement())
-  image     String
-  Service   Service @relation(fields: [serviceId], references: [id])
-  serviceId Int     @map("service_id")
+model GigImage {
+  id    Int    @id @default(autoincrement())
+  image String
+  Gig   Gig    @relation(fields: [gigId], references: [id])
+  gigId Int    @map("gig_id")
 
-  @@map("service_images")
+  @@map("gig_images")
+}
+
+model GigReview {
+  id     Int    @id @default(autoincrement())
+  rating Int
+  review String
+  Gig    Gig    @relation(fields: [gigId], references: [id])
+  gigId  Int    @map("gig_id")
+  User   User   @relation(fields: [userId], references: [id])
+  userId Int    @map("user_id")
+
+  @@map("gig_reviews")
 }
